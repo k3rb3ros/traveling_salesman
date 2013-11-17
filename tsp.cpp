@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -26,6 +27,11 @@ void CleanUp(vector<Tour*> &population) //Free everything dynamically allocated
 	 delete population[i];
 	 population.erase(population.begin()+i);
 	}
+}
+
+double Distance(City A, City B)
+{
+	return hypot((double)((A.x)-(B.x)), (double)((A.y)-(B.y)));
 }
 
 void PrintTour(vector<Tour*> &population, unsigned int tour_num) //Print the tours in a population
@@ -67,7 +73,7 @@ int main(void)
 	population.push_back(InitTour()); //add a test member to population
 	
 	PrintTour(population, 1);
+	cout << "Distance between 1, 15 is " << Distance(population[0] -> cities[0], population[0] -> cities[14]);
 	
 	CleanUp(population);
-	cout << "The Optimal solution is 42" << endl;
 }
