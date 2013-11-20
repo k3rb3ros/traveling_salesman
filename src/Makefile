@@ -4,16 +4,17 @@
 CC=g++ -std=c++0x
 CFLAGS= -O0 -g -Wall -Wextra
 LDFLAGS=
-SOURCES=tsp.cpp
-OBJECTS=$(SOURCES:.cpp=.o)
+SRC=$(wildcard *.cpp)
+OBJDIR=obj
+OBJ=$(SRC:.cpp=.o)
 BINARY=TSP
 
-all: $(BINARY) $(OBJECTS)
+all: $(BINARY) $(OBJ)
 .cpp.o:
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $(OBJDIR)/$@
 
-$(BINARY): $(OBJECTS)
-	$(CC) $(CFLAGS) $(OBJECTS) -o $@
+$(BINARY): $(OBJ)
+	$(CC) $(CFLAGS) $(addprefix $(OBJDIR)/,$(OBJ)) -o  $@
 
 clean: 
-	rm -rfv $(BINARY) $(OBJECTS)
+	rm -rfv $(BINARY) $(OBJ)
