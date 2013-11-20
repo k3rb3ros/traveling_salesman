@@ -20,7 +20,7 @@ struct City
 struct Tour
 {
 	City cities[CITIES];
-	int score;
+	double score;
 };
 
 class Genetic
@@ -32,19 +32,22 @@ class Genetic
 	vector<Tour*> population;
 
 	bool TourComplete(Tour* tour);
+	double BestScore;
 	double Distance(City A, City B);
 	Tour* InitTour();
 	void Test();
 
 	public:	
 	Genetic();
-	bool GetProgenator();
 	double TourDistance(Tour* tour);
 	double ScoreTour(Tour* tour);
 	void Breed();
 	void Mutate();
-	void Reap();
 	void PrintProg();
 	void PrintTour(unsigned int tour_num);
+	void Progenate(unsigned int init_pop_size);
+	void Reap();
+	void ScorePopulation();
+	void TestRand();
 	~Genetic();
 };

@@ -19,7 +19,7 @@ uint8_t Rand::GetVal(uint8_t upper_lim)
 {
 	uint8_t num = 0;
 	rand >> num;
-	return num%upper_lim;
+	return num%upper_lim+1;
 }
 
 Rand::~Rand()
