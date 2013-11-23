@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <assert.h>
 #include <cmath>
 #include <iostream>
@@ -9,6 +10,10 @@ using namespace std;
 
 #define CITIES 15
 #define DATAFILE "cities.dat"
+#define DEATHRATE .65
+#define GROWRATE .70
+#define GENERATIONS 45
+#define INIT_POP 10000
 
 struct City
 {
@@ -34,7 +39,12 @@ class Genetic
 	bool TourComplete(Tour* tour);
 	double BestScore;
 	double Distance(City A, City B);
+	int BestTour;
+	Tour* Crossover(Tour* A, Tour* B);
 	Tour* InitTour();
+	void Kill(unsigned int choice);
+	void PrintProgress(unsigned int ops, unsigned int progress);
+	void Sort();
 	void Test();
 
 	public:	
@@ -43,10 +53,12 @@ class Genetic
 	double ScoreTour(Tour* tour);
 	void Breed();
 	void Mutate();
-	void PrintProg();
+	void PrintPop();
+	void PrintProgenator();
 	void PrintTour(unsigned int tour_num);
 	void Progenate(unsigned int init_pop_size);
 	void Reap();
+	void RunSimulation();
 	void ScorePopulation();
 	void TestRand();
 	~Genetic();

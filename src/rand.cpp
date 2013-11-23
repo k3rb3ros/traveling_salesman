@@ -7,7 +7,7 @@ Rand::Rand()
 	{
 		is_good = true;
 	}
-	else is_good = false;
+	else is_good = false;	
 }
 
 bool Rand::IsGood()
@@ -15,11 +15,28 @@ bool Rand::IsGood()
 	return is_good;
 }
 
-uint8_t Rand::GetVal(uint8_t upper_lim)
+uint32_t Rand::GetVal(uint32_t upper_lim) //will never reach upper_lim (only approaches)
+{
+	uint32_t num = 0;
+	uint8_t* fill= (uint8_t*)&num;
+
+	if(rand.good())
+	{ //For some strange (unknown but likely intended) reason /dev/urandom can only be read a char at a time
+		rand >> fill[0] >> fill[1] >> fill[2] >> fill[3];
+		return num%upper_lim+1;
+	}
+	else return 0;
+}
+
+uint8_t Rand::RChar(uint8_t upper_lim) //can reach upper_lim
 {
 	uint8_t num = 0;
-	rand >> num;
-	return num%upper_lim+1;
+	if(rand.good())
+	{
+		rand >> num;
+		return num%upper_lim+1;
+	}
+	else return 0;
 }
 
 Rand::~Rand()

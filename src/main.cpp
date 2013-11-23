@@ -5,12 +5,10 @@ int main(void)
 {
 	Genetic solve_tsp;
 
-	solve_tsp.PrintProg();
+	solve_tsp.PrintProgenator();
 	cout << "Spawning Generation 1\n";
-	solve_tsp.Progenate(10000);
-	cout << "Done\n";
-	solve_tsp.ScorePopulation();
 	//solve_tsp.TestRand();
+	solve_tsp.RunSimulation();
 	
 
 	return 0;
