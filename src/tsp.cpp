@@ -7,7 +7,6 @@ struct cmpr
 
 Genetic::Genetic()
 {
-	Test(); //Continue if we pass our tests;
 	ifstream fin(DATAFILE);
         if(fin.good())
         {
@@ -25,6 +24,7 @@ Genetic::Genetic()
 		//Set our private members
 		BestScore = DBL_MIN;
 		generation = 0;
+		Test(); //Continue if we pass our tests;
         }
 	else cerr << "File " << DATAFILE << " not read check that it exists\n";
 }
@@ -55,10 +55,11 @@ double Genetic::TourDistance(Tour* tour)
 	double distance = 0;
  	for(int i=0; i<CITIES-1; i++)
 	{
-		distance += hypot((double)((tour->cities[i].x)-(tour->cities[i+1].x)), ((tour->cities[i].y)-(tour->cities[i+1].y))); //get the sum of distance between all the cities
+		//get the sum of distance between all the cities
+		distance += hypot((double)((tour->cities[i].x)-(tour->cities[i+1].x)), ((tour->cities[i].y)-(tour->cities[i+1].y)));
 	}
-	distance += hypot((double)((tour->cities[0].x)-(tour->cities[CITIES].x)), ((tour->cities[0].y)-(tour->cities[CITIES].y))); //and the return to the original city
-	//add the return trip
+	//and then the return to the original city
+	distance += hypot((double)((tour->cities[0].x)-(tour->cities[CITIES-1].x)), ((tour->cities[0].y)-(tour->cities[CITIES-1].y)));
 	return distance;
 }
 
@@ -71,12 +72,14 @@ double Genetic::ScoreTour(Tour* tour)
 		if(TourComplete(tour))
 		{
 			score = 200 - distance;
+			cout << "Complete Tour! score is " << score << endl;
 		}
 		else
 		{
 			//Scale down score based on number of repeats
 			score = (400*(1.0/(double)Repeats(tour))) - distance;
 		}
+		//cout << "Score: "<< score << " Distance: " << distance << " Repeats: " << Repeats(tour) << endl; 
 	}
 	return score;
 }
@@ -106,7 +109,7 @@ void Genetic::Kill(unsigned int choice)
 
 void Genetic::PrintProgress(unsigned int ops, unsigned int progress)
 {
-	unsigned int barWidth = 40;
+	unsigned int barWidth = 50;
 	double percent = ((double)progress/(double)ops)*100;
 	unsigned int pos = barWidth * (percent/100);
 	cout << "Progress: [";
@@ -130,6 +133,8 @@ void Genetic::Test()
 	City a;
 	City b;
 
+	//typedef std::numeric_limits< double > dbl;
+
 	a.city = 1;
 	a.x = 3;
 	a.y = 5;
@@ -140,6 +145,9 @@ void Genetic::Test()
 	assert(Distance(a, b) == 10.0); //Test hypotenouse for a known distance
 	b.y = 3;
 	assert(Distance(a, b) == 6.324555320336759); //and one thats not so pretty
+	//cout.precision(dbl::digits10+1);
+	//cout << "$% " << ScoreTour(&progenator);
+	assert(ScoreTour(&progenator) == 80.79048061087767);
 }
 
 void Genetic::Breed(unsigned int cur_pop) //breads new members of the population favoring the strong
@@ -252,7 +260,7 @@ void Genetic::PrintTour(unsigned int tour_num) //Print the tours in a population
 		cout << current -> cities[j].city;
 		if(j < CITIES-1) cout << ", ";
 	}
-	cout << "] distance: " << TourDistance(population[tour_num-1]);
+	cout << "] distance: " << TourDistance(current);
 }
 
 void Genetic::Progenate(unsigned int init_pop_size)
@@ -287,16 +295,16 @@ void Genetic::Reap(unsigned int cur_pop) //Kills members of the population (not 
 		}
 	}
 	else cerr << "Population is 1 can't kill anyone else" << endl;
-	//cout << "Killed: " << dead << endl;
 }
 
 void Genetic::RunSimulation()
 {
 	unsigned int cur_pop = 0;
-	cout << "Running Simulation\n";
 	Progenate(INIT_POP);
 	ScorePopulation();
-	cout << "Initial Best: " << BestScore << endl;
+	cout << "Best Score Generation:" << generation << " " << BestScore << " " << endl;
+	PrintTour(1);
+	cout << endl;
 	for(unsigned int i=0; i<GENERATIONS; i++)
 	{
 		cur_pop = population.size();
@@ -307,7 +315,7 @@ void Genetic::RunSimulation()
 		if(i%10==0) PrintProgress(GENERATIONS, i);
 	}
 	cout << "\n";
-	cout << "Best Score: " << BestScore << " ";
+	cout << "Best Score Generation:" << generation << " " << BestScore << " " << endl ;
 	PrintTour(1);
 }
 
@@ -323,7 +331,6 @@ void Genetic::ScorePopulation() //FIXME if I need to score all of population for
 			if(BestScore < cur_score)
 			{
 				BestScore = cur_score;
-				//BestTour = i;
 			}
 		}
 		//else
@@ -333,12 +340,13 @@ void Genetic::ScorePopulation() //FIXME if I need to score all of population for
 
 Tour* Genetic::Crossover(Tour* A, Tour*B) //Take two tours randomly combine them to create a new one
 {
-	double fate = 0;
+	int fate = 0;
 	Tour* child = new Tour;
+	
 	for(int i=0; i<CITIES; i++)
 	{
-		fate = r_gen.GetVal(100);
-		if(fate > 50.0) child -> cities[i] = A -> cities[i];
+		fate = (int)r_gen.RChar(100);
+		if(fate > 50) child -> cities[i] = A -> cities[i];
 		else child -> cities[i] = B -> cities[i];
 	}
 	return child;
