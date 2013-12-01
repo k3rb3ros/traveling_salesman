@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <cmath>
 #include <iostream>
+#include <float.h>
 #include <fstream>
 #include "rand.h"
 #include <vector>
@@ -10,10 +11,12 @@ using namespace std;
 
 #define CITIES 15
 #define DATAFILE "cities.dat"
-#define DEATHRATE .65
-#define GROWRATE .70
-#define GENERATIONS 45
+#define DEATHRATE 74
+#define GROWRATE 75
+#define GENERATIONS 10000
 #define INIT_POP 10000
+#define MUTATERATE 5
+#define TARGET_POP 1000
 
 struct City
 {
@@ -39,7 +42,7 @@ class Genetic
 	bool TourComplete(Tour* tour);
 	double BestScore;
 	double Distance(City A, City B);
-	int BestTour;
+	short Repeats(Tour* tour);
 	Tour* Crossover(Tour* A, Tour* B);
 	Tour* InitTour();
 	void Kill(unsigned int choice);
@@ -51,13 +54,13 @@ class Genetic
 	Genetic();
 	double TourDistance(Tour* tour);
 	double ScoreTour(Tour* tour);
-	void Breed();
-	void Mutate();
+	void Breed(unsigned int cur_pop);
+	void Mutate(unsigned int cur_pop);
 	void PrintPop();
 	void PrintProgenator();
 	void PrintTour(unsigned int tour_num);
 	void Progenate(unsigned int init_pop_size);
-	void Reap();
+	void Reap(unsigned int cur_pop);
 	void RunSimulation();
 	void ScorePopulation();
 	void TestRand();

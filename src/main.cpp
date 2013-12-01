@@ -10,6 +10,5 @@ int main(void)
 	//solve_tsp.TestRand();
 	solve_tsp.RunSimulation();
 	
-
 	return 0;
 }

@@ -23,7 +23,7 @@ uint32_t Rand::GetVal(uint32_t upper_lim) //will never reach upper_lim (only app
 	if(rand.good())
 	{ //For some strange (unknown but likely intended) reason /dev/urandom can only be read a char at a time
 		rand >> fill[0] >> fill[1] >> fill[2] >> fill[3];
-		return num%upper_lim+1;
+		return num%(upper_lim+1);
 	}
 	else return 0;
 }
@@ -34,7 +34,7 @@ uint8_t Rand::RChar(uint8_t upper_lim) //can reach upper_lim
 	if(rand.good())
 	{
 		rand >> num;
-		return num%upper_lim+1;
+		return num%(upper_lim+1);
 	}
 	else return 0;
 }
