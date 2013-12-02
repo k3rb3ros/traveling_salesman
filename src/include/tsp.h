@@ -11,10 +11,10 @@ using namespace std;
 
 #define CITIES 15
 #define DATAFILE "cities.dat"
-#define DEATHRATE 74
+#define DEATHRATE 70
 #define GROWRATE 75
-#define GENERATIONS 10000
-#define INIT_POP 10000
+#define GENERATIONS 500
+#define INIT_POP 100
 #define MUTATERATE 5
 #define TARGET_POP 1000
 

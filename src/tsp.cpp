@@ -22,7 +22,7 @@ Genetic::Genetic()
 		}
                 fin.close();
 		//Set our private members
-		BestScore = DBL_MIN;
+		BestScore = -9999.99999;
 		generation = 0;
 		Test(); //Continue if we pass our tests;
         }
@@ -36,7 +36,7 @@ bool Genetic::TourComplete(Tour* tour) //Returns true if a tour contains all the
 	for(int i=0; i<CITIES; i++) complete[i] = false; //init the array
 	for(int j=0; j<CITIES; j++)
 	{
-	 city = (tour -> cities[j].city) -1;
+	 city = (tour -> cities[j].city-1);
 	 if(complete[city] == false) complete[city] = true; //set the list to true
 	}
 	for(int k=0; k<CITIES; k++) if(complete[k] == false) return false;
@@ -72,14 +72,19 @@ double Genetic::ScoreTour(Tour* tour)
 		if(TourComplete(tour))
 		{
 			score = 200 - distance;
-			cout << "Complete Tour! score is " << score << endl;
 		}
 		else
 		{
 			//Scale down score based on number of repeats
 			score = (400*(1.0/(double)Repeats(tour))) - distance;
 		}
-		//cout << "Score: "<< score << " Distance: " << distance << " Repeats: " << Repeats(tour) << endl; 
+		/*if(score > 500)
+		{ 
+			cout << "Score: " << score << " Repeats: " << Repeats(tour) << "Distance: " << distance << "Tour: " << TourComplete(tour) << endl;
+			cout << "[";
+			for(int i=0; i<CITIES; ++i) cout << tour -> cities[i].city << " ";
+			cout << "]\n";
+		}*/
 	}
 	return score;
 }
@@ -119,7 +124,8 @@ void Genetic::PrintProgress(unsigned int ops, unsigned int progress)
 		else if(i == pos) cout << ">";
 		else cout << " ";
 	}
-	cout << "] " << percent << "\% Generation: " << generation << "    \r";
+	cout << "] " << percent << "\% Gen: " << generation << " Best: " << BestScore << "    \r";
+	//cout << "] " << percent << "\% Gen: " << generation << "    \r";
 	cout.flush();
 }
 
@@ -181,6 +187,7 @@ void Genetic::Mutate(unsigned int cur_pop) //mutates a random member of the popu
 		//choose a non optimal member of the population at random
 		int choice = 1+r_gen.GetVal(population.size()-2); 
 		int repeats[CITIES]; 
+		
 		//Init our count array
 		for(short i=0; i<CITIES; ++i) repeats[i] = 0;
 		//count any repeated cities
@@ -191,28 +198,22 @@ void Genetic::Mutate(unsigned int cur_pop) //mutates a random member of the popu
 		}
 		//cout << "Repeats [";
 		//for(short tmp=0; tmp<CITIES; ++tmp) cout << repeats[tmp] << " ";
-		//cout << "]\n\n";
+		//cout << "]\n";
 		//replace repeated cities with cities not in the tour
 		for(short l=0; l<CITIES; l++)
 		{
-			//if a city is repeated in the chosen tour then replace it with one that isn't
-			if(repeats[l] > 1 ) 
+			//if a city is a repeat then choose one that is not
+			if(repeats[(population[choice] -> cities[l].city-1)] > 1)
 			{
-				for(short m=0; m<CITIES; m++)
-				{
-					//randomly choose a city and check until we've chosen one that isn't in the tour already
-					if(population[choice] -> cities[m].city == l)
-					{
-						short a=0;
-						while(repeats[a] > 1)
-						{
-							a = (int)r_gen.RChar(CITIES-1);
-						}
-						//decriment the count in repeats
-						repeats[m] --;
-						population[choice] -> cities[m] = progenator.cities[a];
-					} 	
-				}	
+				short a=0;
+				//randomly choose a new a that isn't in the tour
+				while(repeats[a] != 0) a = r_gen.RChar(CITIES);
+				//decrement the count of the old on in repeats
+				repeats[(population[choice] -> cities[l].city-1)] --; 
+				//increment the count of the new city
+				repeats[a]++;
+				//update the tour
+				population[choice] -> cities[l] = progenator.cities[a];
 			}
 		}
 		//Set the score of the mutated tour to zero so that it gets rescored
@@ -302,7 +303,7 @@ void Genetic::RunSimulation()
 	unsigned int cur_pop = 0;
 	Progenate(INIT_POP);
 	ScorePopulation();
-	cout << "Best Score Generation:" << generation << " " << BestScore << " " << endl;
+	cout << "Best Score Generation:" << generation-1 << " " << BestScore << " " << endl;
 	PrintTour(1);
 	cout << endl;
 	for(unsigned int i=0; i<GENERATIONS; i++)
@@ -315,7 +316,7 @@ void Genetic::RunSimulation()
 		if(i%10==0) PrintProgress(GENERATIONS, i);
 	}
 	cout << "\n";
-	cout << "Best Score Generation:" << generation << " " << BestScore << " " << endl ;
+	cout << "Best Score Generation:" << generation-1 << " " << BestScore << " " << endl ;
 	PrintTour(1);
 }
 
@@ -399,4 +400,5 @@ Genetic::~Genetic()
 	{
 		delete population[i];
 	}	
-}	
+}
+
