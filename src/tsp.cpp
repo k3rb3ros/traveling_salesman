@@ -76,7 +76,7 @@ double Genetic::ScoreTour(Tour* tour)
 		else
 		{
 			//Scale down score based on number of repeats
-			score = (400*(1.0/(double)Repeats(tour))) - distance;
+			score = (200*(1.0/((double)Repeats(tour)+1))) - distance;
 		}
 		/*if(score > 500)
 		{ 
