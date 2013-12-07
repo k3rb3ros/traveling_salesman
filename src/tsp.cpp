@@ -124,7 +124,7 @@ void Genetic::PrintProgress(unsigned int ops, unsigned int progress)
 		else if(i == pos) cout << ">";
 		else cout << " ";
 	}
-	cout << "] " << percent << "\% Gen: " << generation << " Best: " << BestScore << "    \r";
+	cout << "] " << percent << "\% Gen: " << generation << " Best: " << BestScore << "     \r";
 	//cout << "] " << percent << "\% Gen: " << generation << "    \r";
 	cout.flush();
 }
@@ -303,7 +303,7 @@ void Genetic::RunSimulation()
 	unsigned int cur_pop = 0;
 	Progenate(INIT_POP);
 	ScorePopulation();
-	cout << "Best Score Generation:" << generation-1 << " " << BestScore << " " << endl;
+	cout << "Best Score Generation:" << generation-1 << " " << ScoreTour(population[0]) << " " << endl;
 	PrintTour(1);
 	cout << endl;
 	for(unsigned int i=0; i<GENERATIONS; i++)
@@ -316,7 +316,7 @@ void Genetic::RunSimulation()
 		if(i%10==0) PrintProgress(GENERATIONS, i);
 	}
 	cout << "\n";
-	cout << "Best Score Generation:" << generation-1 << " " << BestScore << " " << endl ;
+	cout << "Best Score Generation:" << generation-1 << " " << ScoreTour(population[0]) << " " << endl ;
 	PrintTour(1);
 }
 
@@ -336,7 +336,7 @@ void Genetic::ScorePopulation() //FIXME if I need to score all of population for
 		}
 		//else
 	}
-	this -> Sort(); //Sort the population
+	this -> Sort(); //Sort the population with the highes scoring being the lowest number
 }
 
 Tour* Genetic::Crossover(Tour* A, Tour*B) //Take two tours randomly combine them to create a new one

@@ -13,10 +13,10 @@ using namespace std;
 #define DATAFILE "cities.dat"
 #define DEATHRATE 70
 #define GROWRATE 75
-#define GENERATIONS 1000
+#define GENERATIONS 750
 #define INIT_POP 100
-#define MUTATERATE 15
-#define TARGET_POP 2000
+#define MUTATERATE 20
+#define TARGET_POP 1000
 
 struct City
 {
